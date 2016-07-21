@@ -18,6 +18,7 @@ public class ManagedObject: NSManagedObject {
     super.init(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
   }
   
+  @available(*, unavailable)
   private override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
     super.init(entity: entity, insertIntoManagedObjectContext: context)
   }
