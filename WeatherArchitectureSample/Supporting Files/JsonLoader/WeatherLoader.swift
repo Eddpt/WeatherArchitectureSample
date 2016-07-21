@@ -14,15 +14,15 @@ import CoreData
  */
 struct WeatherLoader {
   
-  static func allWeatherRecords(managedObjectContext: NSManagedObjectContext) -> [WeatherRecord] {
+  static func allWeatherRecords(_ managedObjectContext: NSManagedObjectContext) -> [WeatherRecord] {
     var weatherRecords : [WeatherRecord] = []
     
-    managedObjectContext.performBlockAndWait {
+    managedObjectContext.performAndWait {
       
-      guard let path = NSBundle.mainBundle().pathForResource("WeatherRecords", ofType: "json"),
-        jsonData = NSData(contentsOfFile: path),
-        jsonResult = try? NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary,
-        jsonResultArray = jsonResult!["list"] as? NSArray else { return }
+      guard let path = Bundle.main.pathForResource("WeatherRecords", ofType: "json"),
+        let jsonData = try? Data(contentsOf: URL(fileURLWithPath: path)),
+        let jsonResult = try? JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary,
+        let jsonResultArray = jsonResult!["list"] as? NSArray else { return }
       
       weatherRecords = jsonResultArray.flatMap({ (weatherRecordResult) -> WeatherRecord? in
         let weatherRecord = WeatherRecord(managedObjectContext: managedObjectContext)

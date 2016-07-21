@@ -9,7 +9,7 @@
 import CoreData
 
 public func createWeatherMainContext() -> NSManagedObjectContext? {
-  return NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType, modelVersion: WeatherModelVersion.CurrentVersion, storeURL: StoreURL!)
+  return NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType, modelVersion: WeatherModelVersion.CurrentVersion, storeURL: StoreURL)
 }
 
-private let StoreURL = NSURL.documentsURL.URLByAppendingPathComponent("weather.sqlite")
+private let StoreURL = try! URL.documentsURL.appendingPathComponent("weather.sqlite")

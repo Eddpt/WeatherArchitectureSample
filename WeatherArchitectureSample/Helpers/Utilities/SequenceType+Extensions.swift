@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension SequenceType {
+extension Sequence {
   
-  func findFirstOccurence(@noescape block: Generator.Element -> Bool) -> Generator.Element? {
+  func findFirstOccurence(_ block: @noescape (Iterator.Element) -> Bool) -> Iterator.Element? {
     for x in self where block(x) {
       return x
     }

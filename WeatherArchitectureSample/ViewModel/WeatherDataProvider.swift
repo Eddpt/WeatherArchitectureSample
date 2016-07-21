@@ -20,9 +20,9 @@ final class WeatherDataProvider<Delegate: DataProviderDelegate where Delegate.Da
   
   //MARK: Private
   
-  private var fetchRequest: NSFetchRequest = {
-    let fetchRequest = NSFetchRequest(entityName: WeatherRecord.entityName)
-    fetchRequest.sortDescriptors = [NSSortDescriptor(key: .recordDate, ascending: true)]
+  private var fetchRequest: NSFetchRequest<WeatherRecord> = {
+    let fetchRequest = NSFetchRequest<WeatherRecord>(entityName: WeatherRecord.entityName)
+    fetchRequest.sortDescriptors = [SortDescriptor(key: .recordDate, ascending: true)]
     
     return fetchRequest
   }()

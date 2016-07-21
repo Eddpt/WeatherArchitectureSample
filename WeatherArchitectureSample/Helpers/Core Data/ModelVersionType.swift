@@ -13,25 +13,25 @@ public protocol ModelVersionType: Equatable {
   static var AllVersions: [Self] { get }
   static var CurrentVersion: Self { get }
   var name: String { get }
-  var modelBundle: NSBundle { get }
+  var modelBundle: Bundle { get }
   var modelDirectoryName: String { get }
 }
 
 extension ModelVersionType {
-  public init?(storeURL: NSURL) {
-    guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStoreOfType(NSSQLiteStoreType, URL: storeURL, options: nil) else { return nil }
+  public init?(storeURL: URL) {
+    guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else { return nil }
     let version = Self.AllVersions.findFirstOccurence {
-      $0.managedObjectModel().isConfiguration(nil, compatibleWithStoreMetadata: metadata)
+      $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
     }
     guard let result = version else { return nil }
     self = result
   }
   
   public func managedObjectModel() -> NSManagedObjectModel {
-    let omoURL = modelBundle.URLForResource(name, withExtension: "omo", subdirectory: modelDirectoryName)
-    let momURL = modelBundle.URLForResource(name, withExtension: "mom", subdirectory: modelDirectoryName)
+    let omoURL = modelBundle.urlForResource(name, withExtension: "omo", subdirectory: modelDirectoryName)
+    let momURL = modelBundle.urlForResource(name, withExtension: "mom", subdirectory: modelDirectoryName)
     guard let url = omoURL ?? momURL else { fatalError("model version \(self) not found") }
-    guard let model = NSManagedObjectModel(contentsOfURL: url) else { fatalError("cannot open model at \(url)") }
+    guard let model = NSManagedObjectModel(contentsOf: url) else { fatalError("cannot open model at \(url)") }
     
     return model
   }

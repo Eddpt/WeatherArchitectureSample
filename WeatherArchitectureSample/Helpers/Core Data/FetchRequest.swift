@@ -8,13 +8,12 @@
 
 import CoreData
 
-public class FetchRequest<T: ManagedObject>: NSFetchRequest {
-  
-  // MARK: Initialization
-  
-  public required init(predicate: NSPredicate, context: NSManagedObjectContext) {
-    super.init()
-    self.entity = NSEntityDescription.entityForName(T.entityName, inManagedObjectContext: context)
-    self.predicate = predicate
-  }
+public class FetchRequest<T: ManagedObject> {
+
+    public class func fetchRequest(withPredicate predicate: Predicate, context: NSManagedObjectContext) -> NSFetchRequest<T> {
+        let fetchRequest = NSFetchRequest<T>(entityName: T.entityName)
+        fetchRequest.predicate = predicate
+
+        return fetchRequest
+    }
 }

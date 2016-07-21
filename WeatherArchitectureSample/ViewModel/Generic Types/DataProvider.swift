@@ -13,19 +13,19 @@ protocol DataProvider {
   
   associatedtype DataObject
  
-  func objectAtIndexPath(indexPath: NSIndexPath) -> DataObject
+  func objectAtIndexPath(_ indexPath: IndexPath) -> DataObject
   
-  func numberOfItemsInSection(section: Int) -> Int
+  func numberOfItemsInSection(_ section: Int) -> Int
 }
 
 protocol DataProviderDelegate: class {
   associatedtype DataObject: NSManagedObject
-  func dataProviderDidUpdate(updates: [DataProviderUpdate<DataObject>]?)
+  func dataProviderDidUpdate(_ updates: [DataProviderUpdate<DataObject>]?)
 }
 
 enum DataProviderUpdate<DataObject> {
-  case Insert(NSIndexPath)
-  case Update(NSIndexPath, DataObject)
-  case Move(NSIndexPath, NSIndexPath)
-  case Delete(NSIndexPath)
+  case insert(IndexPath)
+  case update(IndexPath, DataObject)
+  case move(IndexPath, IndexPath)
+  case delete(IndexPath)
 }

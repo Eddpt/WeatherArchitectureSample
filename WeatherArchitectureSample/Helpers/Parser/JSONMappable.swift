@@ -9,11 +9,11 @@
 import Foundation
 
 protocol JSONMappable {
-  func updateWithJSONDictionary(JSONDictionary: JSONDictionary) throws -> Self
+  func updateWithJSONDictionary(_ JSONDictionary: JSONDictionary) throws -> Self
 }
 
 extension JSONMappable {
-  func updateWithJSONArray(jsonArray: [JSONDictionary]) throws -> [Self] {
+  func updateWithJSONArray(_ jsonArray: [JSONDictionary]) throws -> [Self] {
     var result: [Self] = []
     
     for jsonDictionary in jsonArray {

@@ -10,7 +10,7 @@ import Foundation
 
 public func className(fromModuleClassName anyClass: AnyClass) -> String? {
   let fullClassName = NSStringFromClass(object_getClass(anyClass))
-  let nameComponents = fullClassName.componentsSeparatedByString(".")
+  let nameComponents = fullClassName.components(separatedBy: ".")
   
   return nameComponents.last
 }

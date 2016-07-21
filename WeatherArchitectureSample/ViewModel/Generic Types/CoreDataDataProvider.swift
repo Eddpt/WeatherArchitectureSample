@@ -12,13 +12,13 @@ class CoreDataDataProvider<T: NSManagedObject, Delegate: DataProviderDelegate wh
   
   //MARK: Private
   
-  private let fetchedResultsController: NSFetchedResultsController
+  private let fetchedResultsController: NSFetchedResultsController<T>
   private weak var delegate: Delegate?
   private var updates: [DataProviderUpdate<CoreDataObject>] = []
   
   //MARK: Initializer
   
-  init(fetchedResultsController: NSFetchedResultsController, delegate: Delegate) {
+  init(fetchedResultsController: NSFetchedResultsController<T>, delegate: Delegate) {
     self.fetchedResultsController = fetchedResultsController
     self.delegate = delegate
     
@@ -30,8 +30,8 @@ class CoreDataDataProvider<T: NSManagedObject, Delegate: DataProviderDelegate wh
   
   //MARK:
   
-  func reconfigureFetchRequest(@noescape block: NSFetchRequest -> ()) {
-    NSFetchedResultsController.deleteCacheWithName(fetchedResultsController.cacheName)
+  func reconfigureFetchRequest(_ block: @noescape (NSFetchRequest<T>) -> ()) {
+    NSFetchedResultsController<T>.deleteCache(withName: fetchedResultsController.cacheName)
     block(fetchedResultsController.fetchRequest)
     
     performFetch()
@@ -53,42 +53,40 @@ class CoreDataDataProvider<T: NSManagedObject, Delegate: DataProviderDelegate wh
   
   typealias CoreDataObject = T
   
-  func objectAtIndexPath(indexPath: NSIndexPath) -> CoreDataObject {
-    guard let fetchedObject = fetchedResultsController.objectAtIndexPath(indexPath) as? CoreDataObject else { fatalError("Unexpected object at \(indexPath)") }
-    
-    return fetchedObject
+  func objectAtIndexPath(_ indexPath: IndexPath) -> CoreDataObject {
+    return fetchedResultsController.object(at: indexPath)    
   }
   
-  func numberOfItemsInSection(section: Int) -> Int {
+  func numberOfItemsInSection(_ section: Int) -> Int {
     return fetchedResultsController.sections?[section].numberOfObjects ?? 0
   }
   
   // MARK: NSFetchedResultsControllerDelegate
   
-  func controllerWillChangeContent(controller: NSFetchedResultsController) {
+  func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     updates = []
   }
   
-  func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+  func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: AnyObject, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
     switch type {
-    case .Insert:
+    case .insert:
       guard let indexPath = newIndexPath else { fatalError("Index path should be not nil") }
-      updates.append(.Insert(indexPath))
-    case .Update:
+      updates.append(.insert(indexPath))
+    case .update:
       guard let indexPath = indexPath else { fatalError("Index path should be not nil") }
       let object = objectAtIndexPath(indexPath)
-      updates.append(.Update(indexPath, object))
-    case .Move:
+      updates.append(.update(indexPath, object))
+    case .move:
       guard let indexPath = indexPath else { fatalError("Index path should be not nil") }
       guard let newIndexPath = newIndexPath else { fatalError("New index path should be not nil") }
-      updates.append(.Move(indexPath, newIndexPath))
-    case .Delete:
+      updates.append(.move(indexPath, newIndexPath))
+    case .delete:
       guard let indexPath = indexPath else { fatalError("Index path should be not nil") }
-      updates.append(.Delete(indexPath))
+      updates.append(.delete(indexPath))
     }
   }
   
-  func controllerDidChangeContent(controller: NSFetchedResultsController) {
+  func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     delegate?.dataProviderDidUpdate(updates)
   }
 }

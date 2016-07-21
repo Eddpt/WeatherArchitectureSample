@@ -16,7 +16,7 @@ final class WeatherPersistence: ManagedObjectContextSettable {
   }
   
   func persistWeather(withData data: JSONDictionary) {
-    managedObjectContext.performBlockAndWait {
+    managedObjectContext.performAndWait {
       
       guard let dataArray = data["list"] as? [JSONDictionary] else {
         return
@@ -24,8 +24,8 @@ final class WeatherPersistence: ManagedObjectContextSettable {
       
       for dataDictionary in dataArray {
         guard let recordDate = dataDictionary["dt"] as? Double else { continue }
-        let recordDatePredicate = NSPredicate(format: "recordDate == %@", NSDate(timeIntervalSince1970: recordDate))
-        let fetchRequest = FetchRequest<WeatherRecord>(predicate: recordDatePredicate, context: self.managedObjectContext)
+        let recordDatePredicate = Predicate(format: "recordDate == %@", Date(timeIntervalSince1970: recordDate))
+        let fetchRequest = FetchRequest<WeatherRecord>.fetchRequest(withPredicate: recordDatePredicate, context: self.managedObjectContext)
         
         let weatherRecord = WeatherRecord.findOrCreate(withRequest: fetchRequest, context: self.managedObjectContext)
         let _ = try? weatherRecord.updateWithJSONDictionary(dataDictionary)

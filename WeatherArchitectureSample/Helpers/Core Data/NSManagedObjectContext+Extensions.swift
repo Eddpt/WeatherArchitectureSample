@@ -9,9 +9,9 @@
 import CoreData
 
 extension NSManagedObjectContext {
-  public convenience init<Version: ModelVersionType>(concurrencyType: NSManagedObjectContextConcurrencyType, modelVersion: Version, storeURL: NSURL) {
+  public convenience init<Version: ModelVersionType>(concurrencyType: NSManagedObjectContextConcurrencyType, modelVersion: Version, storeURL: URL) {
     let psc = NSPersistentStoreCoordinator(managedObjectModel: modelVersion.managedObjectModel())
-    try! psc.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
+    try! psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
     self.init(concurrencyType: concurrencyType)
     persistentStoreCoordinator = psc
   }

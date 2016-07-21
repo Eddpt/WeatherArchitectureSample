@@ -17,6 +17,6 @@ extension WeatherModelVersion: ModelVersionType {
   static var CurrentVersion: WeatherModelVersion { return .Version1 }
   
   var name: String { return rawValue }
-  var modelBundle: NSBundle { return NSBundle(forClass: WeatherRecord.self) }
+  var modelBundle: Bundle { return Bundle(for: WeatherRecord.self) }
   var modelDirectoryName: String { return "Weather.momd" }
 }

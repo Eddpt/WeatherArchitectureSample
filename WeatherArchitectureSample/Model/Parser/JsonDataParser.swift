@@ -8,12 +8,12 @@
 
 import Foundation
 
-class InvalidJSONDataError: ErrorType { }
+class InvalidJSONDataError: ErrorProtocol { }
 
 final class JsonDataParser {
-  class func parse(withData data: NSData) throws -> JSONDictionary {
+  class func parse(withData data: Data) throws -> JSONDictionary {
     do {
-      guard let resultData = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? JSONDictionary else {
+      guard let resultData = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? JSONDictionary else {
         throw InvalidJSONDataError()
       }
       return resultData

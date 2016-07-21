@@ -30,22 +30,22 @@ class GenericTableViewDataCoordinator<DataProviderType: DataProvider, CellType: 
    
    - parameter updates: Optional list of DataProviderUpdates (possible values: Insert/Update/Move/Delete)
    */
-  func processUpdates(updates: [DataProviderUpdate<DataProviderType.DataObject>]?) {
+  func processUpdates(_ updates: [DataProviderUpdate<DataProviderType.DataObject>]?) {
     guard let updates = updates else { return tableView.reloadData() }
     
     tableView.beginUpdates()
     for update in updates {
       switch update {
-      case .Insert(let indexPath):
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-      case .Update(let indexPath, let object):
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? CellType else { break }
+      case .insert(let indexPath):
+        tableView.insertRows(at: [indexPath], with: .fade)
+      case .update(let indexPath, let object):
+        guard let cell = tableView.cellForRow(at: indexPath) as? CellType else { break }
         cell.configure(forObject: object)
-      case .Move(let indexPath, let newIndexPath):
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Fade)
-      case .Delete(let indexPath):
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+      case .move(let indexPath, let newIndexPath):
+        tableView.deleteRows(at: [indexPath], with: .fade)
+        tableView.insertRows(at: [newIndexPath], with: .fade)
+      case .delete(let indexPath):
+        tableView.deleteRows(at: [indexPath], with: .fade)
       }
     }
     tableView.endUpdates()
@@ -54,9 +54,9 @@ class GenericTableViewDataCoordinator<DataProviderType: DataProvider, CellType: 
   
   //MARK: UITableViewDataSource
   
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
-    guard let cell = tableView.dequeueReusableCellWithIdentifier(CellType.reuseIdentifier) as? CellType else {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: CellType.reuseIdentifier) as? CellType else {
       fatalError("Could not dequeue cell of type: \(CellType.self) with identifier: \(CellType.reuseIdentifier)")
     }
     
@@ -66,7 +66,7 @@ class GenericTableViewDataCoordinator<DataProviderType: DataProvider, CellType: 
     return cell
   }
   
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return dataProvider.numberOfItemsInSection(section)
   }
 }

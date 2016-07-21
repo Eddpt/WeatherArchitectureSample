@@ -8,17 +8,17 @@
 
 import Foundation
 
-extension NSURL {
-  func addComponent(withName name: String, value: String) -> NSURL? {
-    let urlComponents = NSURLComponents(URL: self, resolvingAgainstBaseURL: true)
+extension URL {
+  func addComponent(withName name: String, value: String) -> URL? {
+    var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: true)
     
-    var queryItems = [NSURLQueryItem(name: name, value: value)]
+    var queryItems = [URLQueryItem(name: name, value: value)]
     if let originalQueryItem = urlComponents?.queryItems  {
-      queryItems.insertContentsOf(originalQueryItem, at: 0)
+      queryItems.insert(contentsOf: originalQueryItem, at: 0)
     }
     
     urlComponents?.queryItems = queryItems
     
-    return urlComponents?.URL
+    return urlComponents?.url
   }
 }

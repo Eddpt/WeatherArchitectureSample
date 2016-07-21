@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension NSURL {
-  static var documentsURL: NSURL {
-    return try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+extension URL {
+  static var documentsURL: URL {
+    return try! FileManager.default.urlForDirectory(.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
   }
 }

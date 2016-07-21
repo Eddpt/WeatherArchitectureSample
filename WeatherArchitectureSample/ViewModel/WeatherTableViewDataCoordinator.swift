@@ -14,7 +14,7 @@ final class WeatherTableViewDataCoordinator<Delegate: DataProviderDelegate where
 
   init(tableView: UITableView, weatherDataProvider: WeatherDataProvider<Delegate>) {
     let weatherCellNib = UINib(nibName: WeatherTableViewCell.nibName, bundle: nil)
-    tableView.registerNib(weatherCellNib, forCellReuseIdentifier: WeatherTableViewCell.reuseIdentifier)
+    tableView.register(weatherCellNib, forCellReuseIdentifier: WeatherTableViewCell.reuseIdentifier)
     
     super.init(tableView: tableView, dataProvider: weatherDataProvider)
   }

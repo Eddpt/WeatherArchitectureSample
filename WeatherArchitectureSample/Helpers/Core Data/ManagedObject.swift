@@ -13,17 +13,17 @@ public class ManagedObject: NSManagedObject {
   public required init(managedObjectContext: NSManagedObjectContext) {
     let entityName = self.dynamicType.entityName
     
-    let entity = NSEntityDescription.entityForName(entityName, inManagedObjectContext: managedObjectContext)!
+    let entity = NSEntityDescription.entity(forEntityName: entityName, in: managedObjectContext)!
     
-    super.init(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
+    super.init(entity: entity, insertInto: managedObjectContext)
   }
   
   @available(*, unavailable)
-  private override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-    super.init(entity: entity, insertIntoManagedObjectContext: context)
+  private override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+    super.init(entity: entity, insertInto: context)
   }
 
-  public class func findOrCreate<T: ManagedObject>(withRequest fetchRequest: FetchRequest<T>, context: NSManagedObjectContext) -> T {
+  public class func findOrCreate<T: ManagedObject>(withRequest fetchRequest: NSFetchRequest<T>, context: NSManagedObjectContext) -> T {
     guard let object = findUnique(withRequest: fetchRequest, context: context) else {
       return T(managedObjectContext: context)
     }
@@ -31,11 +31,15 @@ public class ManagedObject: NSManagedObject {
     return object
   }
   
-  private class func findUnique<T: ManagedObject>(withRequest fetchRequest: FetchRequest<T>, context: NSManagedObjectContext) -> T? {
+  private class func findUnique<T: ManagedObject>(withRequest fetchRequest: NSFetchRequest<T>, context: NSManagedObjectContext) -> T? {
     fetchRequest.fetchLimit = 1
     
     do {
-      return (try context.executeFetchRequest(fetchRequest) as! [T]).first
+//      return (try context.fetch(fetchRequest)).first as? T
+
+        let array: [T] = (try context.fetch(fetchRequest))
+
+        return array.first
     } catch let error as NSError {
       print("Fetch failed: \(error.localizedDescription)")
     }

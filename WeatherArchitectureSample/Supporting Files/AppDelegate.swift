@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
   
-  func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     
     configureMainObjectContext()
     
@@ -24,11 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return true
   }
   
-  func applicationDidEnterBackground(application: UIApplication) {
+  func applicationDidEnterBackground(_ application: UIApplication) {
     managedObjectContext.saveContext()
   }
   
-  func applicationWillTerminate(application: UIApplication) {
+  func applicationWillTerminate(_ application: UIApplication) {
     managedObjectContext.saveContext()
   }
   

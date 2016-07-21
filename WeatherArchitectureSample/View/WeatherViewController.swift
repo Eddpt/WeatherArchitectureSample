@@ -22,7 +22,7 @@ final class WeatherViewController: UIViewController, ManagedObjectContextSettabl
   
   private var tableViewDataCoordinator: WeatherTableViewDataCoordinator<WeatherViewController>!
   private let weatherAPIClient = WeatherAPIClient()
-  private var requestTask: NSURLSessionDataTask?
+  private var requestTask: URLSessionDataTask?
   
   //MARK: Lifecycle
   
@@ -41,7 +41,7 @@ final class WeatherViewController: UIViewController, ManagedObjectContextSettabl
   
   //MARK: Actions
   
-  @objc @IBAction private func didTapRefresh(sender: AnyObject) {
+  @objc @IBAction private func didTapRefresh(_ sender: AnyObject) {
     refreshWeather()
   }
   
@@ -54,8 +54,8 @@ final class WeatherViewController: UIViewController, ManagedObjectContextSettabl
   }
   
   private func changeRefreshState(toRefreshingState state: Bool) {
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = state
-    refreshButton.enabled = !state
+    UIApplication.shared().isNetworkActivityIndicatorVisible = state
+    refreshButton.isEnabled = !state
   }
   
 }
@@ -63,7 +63,7 @@ final class WeatherViewController: UIViewController, ManagedObjectContextSettabl
 extension WeatherViewController: DataProviderDelegate {
   typealias DataObject = WeatherRecord
   
-  func dataProviderDidUpdate(updates: [DataProviderUpdate<WeatherRecord>]?) {
+  func dataProviderDidUpdate(_ updates: [DataProviderUpdate<WeatherRecord>]?) {
     guard let updates = updates else {
       return
     }

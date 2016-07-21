@@ -11,23 +11,22 @@ import CoreData
 @objc(WeatherRecord)
 
 public final class WeatherRecord: ManagedObject {
-  @NSManaged public private(set) var recordDate: NSDate
+  @NSManaged public private(set) var recordDate: Date
   @NSManaged public private(set) var minTemperature: Double
   @NSManaged public private(set) var maxTemperature: Double
 }
 
-class InvalidDataError: ErrorType { }
+class InvalidDataError: ErrorProtocol { }
 
 extension WeatherRecord: JSONMappable {
-  func updateWithJSONDictionary(jsonDictionary: JSONDictionary) throws -> Self {
-    guard let
-      recordDate = jsonDictionary["dt"] as? Double,
-      temperatureDictionary = jsonDictionary["temp"] as? JSONDictionary,
-      minTemperature = temperatureDictionary["min"] as? Double,
-      maxTemperature = temperatureDictionary["max"] as? Double
+  func updateWithJSONDictionary(_ jsonDictionary: JSONDictionary) throws -> Self {
+    guard let recordDate = jsonDictionary["dt"] as? Double,
+          let temperatureDictionary = jsonDictionary["temp"] as? JSONDictionary,
+          let minTemperature = temperatureDictionary["min"] as? Double,
+          let maxTemperature = temperatureDictionary["max"] as? Double
       else { throw InvalidDataError() }
     
-    self.recordDate = NSDate(timeIntervalSince1970: recordDate)
+    self.recordDate = Date(timeIntervalSince1970: recordDate)
     self.minTemperature = minTemperature
     self.maxTemperature = maxTemperature
     

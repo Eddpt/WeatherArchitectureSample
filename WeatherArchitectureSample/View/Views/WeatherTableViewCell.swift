@@ -24,13 +24,13 @@ final class WeatherTableViewCell : UITableViewCell {
 
 extension WeatherTableViewCell : ConfigurableCell {
   func configure(forObject weatherRecord: WeatherRecord) {
-    dateLabel.text = self.dynamicType.dateFormatter.stringFromDate(weatherRecord.recordDate)
+    dateLabel.text = self.dynamicType.dateFormatter.string(from: weatherRecord.recordDate as Date)
     minTemperatureLabel.text = String(format: "%.0f", weatherRecord.minTemperature)
     maxTemperatureLabel.text = String(format: "%.0f", weatherRecord.maxTemperature)
   }
     
-  private static var dateFormatter: NSDateFormatter = {
-    let dateFormatter = NSDateFormatter()
+  private static var dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "dd-MM-yyyy"
     return dateFormatter
   }()

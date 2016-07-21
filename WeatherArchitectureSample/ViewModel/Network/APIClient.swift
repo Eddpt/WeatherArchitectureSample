@@ -10,16 +10,16 @@ import Foundation
 
 public typealias JSONDictionary = [String : AnyObject]
 
-enum APIError: ErrorType {
-  case GenericError(error: NSError)
-  case InvalidResponseError
-  case BadResponseError(response: NSURLResponse)
-  case InvalidDataError
+enum APIError: ErrorProtocol {
+  case genericError(error: NSError)
+  case invalidResponseError
+  case badResponseError(response: URLResponse)
+  case invalidDataError
 }
 
-enum Result<T, Error: ErrorType> {
-  case Success(T)
-  case Failure(Error)
+enum Result<T, Error: ErrorProtocol> {
+  case success(T)
+  case failure(Error)
 }
 
 
@@ -27,36 +27,36 @@ class APIClient {
   
   //MARK: Private
   
-  private var urlSession = NSURLSession.sharedSession()
+  private var urlSession = URLSession.shared
   
-  func getData(fromURL url: NSURL, completion: Result<JSONDictionary, APIError> -> Void) -> NSURLSessionDataTask? {
-    let task = urlSession.dataTaskWithURL(url) { (responseData, response, responseError) in
+  func getData(fromURL url: URL, completion: (Result<JSONDictionary, APIError>) -> Void) -> URLSessionDataTask? {
+    let task = urlSession.dataTask(with: url) { (responseData, response, responseError) in
       if let error = responseError {
-        completion(.Failure(APIError.GenericError(error: error)))
+        completion(.failure(APIError.genericError(error: error)))
         return
       }
       
-      guard let httpResponse = response as? NSHTTPURLResponse else {
-        completion(.Failure(APIError.InvalidResponseError))
+      guard let httpResponse = response as? HTTPURLResponse else {
+        completion(.failure(APIError.invalidResponseError))
         return
       }
       
       guard (200...299 ~= httpResponse.statusCode) else {
-        completion(.Failure(APIError.BadResponseError(response: httpResponse)))
+        completion(.failure(APIError.badResponseError(response: httpResponse)))
         return
       }
       
       guard let data = responseData else {
-        completion(.Failure(APIError.InvalidDataError))
+        completion(.failure(APIError.invalidDataError))
         return
       }
       
       do {
         let result = try JsonDataParser.parse(withData: data)
         
-        completion(.Success(result))
+        completion(.success(result))
       } catch {
-        completion(.Failure(APIError.InvalidDataError))
+        completion(.failure(APIError.invalidDataError))
       }
     }
     
